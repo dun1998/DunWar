@@ -1,0 +1,5 @@
+name: DunWar
+version: '${version}'
+main: io.github.dun1998.dunwar.DunWar
+api-version: '1.20'
+authors: [dun198]
