@@ -3,3 +3,17 @@ version: '${version}'
 main: io.github.dun1998.dunwar.DunWar
 api-version: '1.20'
 authors: [dun198]
+depend: [WorldGuard]
+commands:
+  Teams:
+    description: 'Lists all teams'
+    usage: /<command>
+  CreateTeam:
+    description: 'Creates a team with the specified color'
+    usage: /<command> <color>
+  RenameTeam:
+    description: 'Renames a team.'
+    usage: /<command> <current name||color> <new name>
+  JoinTeam:
+    description: 'Join either a random or specific team'
+    usage: /<command> <optional Team Name>

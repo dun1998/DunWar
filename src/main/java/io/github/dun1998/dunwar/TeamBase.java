@@ -1,2 +1,6 @@
-package io.github.dun1998.dunwar;public class TeamBase {
+package io.github.dun1998.dunwar;
+
+
+public class TeamBase extends GameObject{
+    WarTeam team;
 }

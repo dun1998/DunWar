@@ -1,7 +1,15 @@
 plugins {
     id 'java'
+    id("xyz.jpenilla.run-paper") version "2.2.2"
 }
-
+tasks {
+    runServer {
+        // Configure the Minecraft version for our task.
+        // This is the only required configuration besides applying the plugin.
+        // Your plugin's jar (or shadowJar if present) will be used automatically.
+        minecraftVersion("1.20.4")
+    }
+}
 group = 'io.github.dun1998'
 version = '1.0-SNAPSHOT'
 
@@ -15,10 +23,16 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name = "worldedit-bukkit"
+        url = "https://maven.enginehub.org/repo/" }
+
+
 }
 
 dependencies {
-compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
 }
 
 def targetJavaVersion = 17
