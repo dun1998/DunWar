@@ -1,8 +1,6 @@
 package io.github.dun1998.dunwar;
 
-import com.google.common.collect.Lists;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.LocalSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -14,20 +12,14 @@ import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Location;
 import org.bukkit.World;
-import com.sk89q.worldedit.regions.CylinderRegion;
-import org.bukkit.block.Block;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
 public class GameMap extends GameObject{
     Location center;
@@ -45,9 +37,6 @@ public class GameMap extends GameObject{
         this.world = world;
         double centerX = center.getX();
         double centerZ = center.getZ();
-        double centerY =  center.getY();
-        List<BlockVector2> points = Lists.newArrayList();
-        BlockVector3 trueCenter = BlockVector3.at(centerX,0,centerZ);
         int minY = 0;
         int maxY= 140;
         BlockVector3 min = BlockVector3.at(centerX-radius, minY, centerZ-radius);
@@ -64,7 +53,6 @@ public class GameMap extends GameObject{
         }
         this.game.regions.addRegion(region);
         region.setPriority(1);
-        LocalSession session = new LocalSession();
         /*
         try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(world))) {
             BlockType b = Objects.requireNonNull(BlockTypes.BEDROCK);
