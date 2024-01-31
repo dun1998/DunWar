@@ -1,6 +1,7 @@
 package io.github.dun1998.dunwar;
 
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -29,6 +30,13 @@ public class WarTeam {
     public void RemovePlayer(WarPlayer player){
         if(players.contains(player)){
             players.remove(player);
+        }
+    }
+
+    public void GetTeamInfo(CommandSender sender){
+        //sends the player all the team info
+        if(sender instanceof Player){
+            sender.sendMessage(String.format("~~~~~~~~~~~~~~~~~~\nTeam: %s \nColor: %s",this.name,this.color));
         }
     }
 

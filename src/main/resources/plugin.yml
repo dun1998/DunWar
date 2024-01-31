@@ -3,7 +3,7 @@ version: '${version}'
 main: io.github.dun1998.dunwar.DunWar
 api-version: '1.20'
 authors: [dun198]
-depend: [WorldGuard]
+depend: [WorldGuard,WorldEdit]
 commands:
   Teams:
     description: 'Lists all teams'
@@ -17,3 +17,9 @@ commands:
   JoinTeam:
     description: 'Join either a random or specific team'
     usage: /<command> <optional Team Name>
+  Team:
+    description: 'View the team info'
+    usage: /<command> <optional Team Name>
+  SetMap:
+    description: 'Sets the game map'
+    usage: /<command> <radius>

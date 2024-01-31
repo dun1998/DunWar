@@ -21,7 +21,7 @@ public class JoinTeam implements CommandExecutor {
         if(sender instanceof Player){
             Player player = ((Player) sender).getPlayer();
             WarPlayer warPlayer = game.FindPlayer(player);
-            if(game.warTeams.size()>1) {
+            if(game.warTeams.size()>=1) {
                 if (args.length == 0) {
                     int minPlayers = 10000;
                     assignedTeam = game.warTeams.get(0);
@@ -33,7 +33,7 @@ public class JoinTeam implements CommandExecutor {
                     }
                 }
                 else{
-                    String match = args[1].toLowerCase();
+                    String match = args[0].toLowerCase();
                     Map<String,WarTeam> dictionary = new HashMap<>();
                     for(WarTeam team:game.warTeams){
                         dictionary.put(team.name.toLowerCase(),team);
@@ -43,6 +43,7 @@ public class JoinTeam implements CommandExecutor {
                     }
                     else{
                         plugin.getLogger().info("Team name entered could not be found.");
+                        sender.sendMessage("Team name entered could not be found.");
                         return false;
                     }
                 }
@@ -52,14 +53,17 @@ public class JoinTeam implements CommandExecutor {
                 assignedTeam.AddPlayer(warPlayer);
                 warPlayer.team = assignedTeam;
                 plugin.getLogger().info(String.format("Assigned to team %s",assignedTeam.name));
+                sender.sendMessage(String.format("Assigned to team %s",assignedTeam.name));
             }
             else{
                 plugin.getLogger().info("No teams exist yet. Create one.");
+                sender.sendMessage("No teams exist yet. Create one.");
                 return false;
             }
         }
         else{
             plugin.getLogger().info("Only players may use this command.");
+            sender.sendMessage("Only players may use this command.");
         }
         return true;
     }

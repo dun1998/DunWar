@@ -12,6 +12,9 @@ public final class DunWar extends JavaPlugin {
         this.getCommand("CreateTeam").setExecutor(new CreateTeam(this,game));
         this.getCommand("RenameTeam").setExecutor(new TeamRename(this,game));
         this.getCommand("JoinTeam").setExecutor(new JoinTeam(this,game));
+        this.getCommand("Team").setExecutor(new GetTeamInfo(this,game));
+        this.getCommand("SetMap").setExecutor(new CreateMap(this,game));
+
 
 
         // Plugin startup logic

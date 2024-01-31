@@ -23,10 +23,12 @@ public class GetTeams implements CommandExecutor {
                 teamNames.add(team.name);
             }
             plugin.getLogger().info(String.valueOf(teamNames));
+            sender.sendMessage(String.valueOf(teamNames));
 
         }
         else{
             plugin.getLogger().info("No teams found.");
+            sender.sendMessage("No teams found.");
         }
         // If the player (or console) uses our command correct, we can return true
         return true;

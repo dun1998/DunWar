@@ -28,6 +28,7 @@ public class CreateTeam implements CommandExecutor {
                     teamColors.add(warTeam.color);
                 }
                 if(teamColors.contains(color)){
+                   sender.sendMessage(String.format("%s is already in use.",color));
                     plugin.getLogger().info(String.format("%s is already in use.",color));
                     //That color is already used by a team, please enter an unused color.
                     return false;
@@ -36,6 +37,7 @@ public class CreateTeam implements CommandExecutor {
             if(!game.allowedColors.contains(color)){
                 //That is not an allowed color
                 //These are the allowed colors:
+                sender.sendMessage(String.format("%s is not an allowed color. Try /colors",color));
                 plugin.getLogger().info(String.format("%s is not an allowed color. Try /colors",color));
                 return false;
             }
@@ -43,11 +45,14 @@ public class CreateTeam implements CommandExecutor {
                 WarTeam t = new WarTeam(color,args.length+1);
                 game.warTeams.add(t);
                 plugin.getLogger().info(String.format("Created the %s Team",color));
+                sender.sendMessage(String.format("Created the %s Team",color));
                 return true;
             }
 
         }
         // If the player (or console) uses our command correct, we can return true
-        return true;
-    }
+        else{
+            return false;
+        }
+        }
 }

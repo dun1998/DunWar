@@ -24,7 +24,7 @@ repositories {
         url = "https://oss.sonatype.org/content/groups/public/"
     }
     maven {
-        name = "worldedit-bukkit"
+        name = "worldguard-bukkit"
         url = "https://maven.enginehub.org/repo/" }
 
 
@@ -33,6 +33,7 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
     compileOnly 'com.sk89q.worldguard:worldguard-bukkit:7.0.9'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
 }
 
 def targetJavaVersion = 17
