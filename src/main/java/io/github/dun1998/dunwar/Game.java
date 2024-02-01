@@ -5,22 +5,21 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 
 public class Game {
     //All the game logic goes here
-    List<String> allowedColors = Arrays.asList("blue","green","yellow");
+    List<String> allowedColors = Arrays.asList("blue","green","orange","purple","red","yellow");
+
     List<WarTeam> warTeams = new ArrayList<>();
     Map<Player,WarPlayer> playerWarDict = new HashMap<>();
     RegionManager regions;
-    List<GameObject> gameObjects = new ArrayList<>();
-    List<GameObject> requiredGameObjects = new ArrayList<>();
+    List<MapObject> gameObjects = new ArrayList<>();
+    List<MapObject> requiredGameObjects = new ArrayList<>();
     RegionContainer container;
     World world;
     int minTeamSize =2;
@@ -46,15 +45,15 @@ public class Game {
 
     public boolean ReadyCheck(){
         boolean ready = true;
-        List<GameObject> missingObj = new ArrayList<>();
-        for(GameObject obj:this.requiredGameObjects){
+        List<MapObject> missingObj = new ArrayList<>();
+        for(MapObject obj:this.requiredGameObjects){
             if(!this.gameObjects.contains((obj))){
                 missingObj.add(obj);
             }
         }
         if(!missingObj.isEmpty()){
             ready = false;
-            for(GameObject obj:missingObj){
+            for(MapObject obj:missingObj){
                 this.plugin.getLogger().info(String.format("DunWar is missing a required object: %s",obj.name));
             }
         }

@@ -17,16 +17,18 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-public class GameMap extends GameObject{
+public class GameMap {
     Location center;
     ProtectedRegion region;
     double radius;
     World world;
     Game game;
+    List<MapObject> mapObjects = new ArrayList<>();
     public GameMap(Game game){
         this.game = game;
     }
@@ -71,6 +73,17 @@ public class GameMap extends GameObject{
 
     }
 
+    public boolean CreateMapObject(CommandSender sender, String objectType, String name){
+        switch(objectType){
+            case "controlregion":
+                ControlLand cl = new ControlLand(name);
+                this.mapObjects.add(cl);
+                return true;
+            default:
+                sender.sendMessage("Not a valid map object.");
+                return false;
+        }
+    }
     public void DestroyMap(CommandSender sender){
         if (this.region == null) {
             sender.sendMessage("No map to remove");

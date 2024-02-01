@@ -8,7 +8,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.command.CommandSender;
 
-public abstract class GameObject{
+public abstract class MapObject {
     //an object which is part of the game (spawn,control point,storage
     boolean required= false;
     boolean enabled= false;

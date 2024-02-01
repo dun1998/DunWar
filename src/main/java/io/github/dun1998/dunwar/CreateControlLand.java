@@ -26,7 +26,7 @@ public class CreateControlLand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         //get points
         if(sender instanceof Player){
-            ControlLand c = new ControlLand();
+            ControlLand c = new ControlLand("");
             Region region = c.getSelection(sender);
             if(region == null){
                 sender.sendMessage("Please make a selection with the world edit wand.");
@@ -43,7 +43,7 @@ public class CreateControlLand implements CommandExecutor {
                 sender.sendMessage("Does not overlap with the game map.");
                 return true;
             }
-            for(GameObject obj:game.gameObjects){
+            for(MapObject obj:game.gameObjects){
                 if(!obj.canOverlap){
                     if(regs.contains(obj.region)){
                         sender.sendMessage("Overlapping with a non-overlap region.");
