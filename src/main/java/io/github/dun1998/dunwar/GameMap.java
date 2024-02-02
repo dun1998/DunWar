@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import javax.naming.ldap.Control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,8 +77,8 @@ public class GameMap {
     public boolean CreateMapObject(CommandSender sender, String objectType, String name){
         switch(objectType){
             case "controlregion":
-                ControlLand cl = new ControlLand(name);
-                this.mapObjects.add(cl);
+                //ControlLand cl = new ControlLand(name);
+                //this.mapObjects.add(cl);
                 return true;
             default:
                 sender.sendMessage("Not a valid map object.");
@@ -99,6 +100,26 @@ public class GameMap {
                     sender.sendMessage("Failed to insert blocks");}
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public void GetControlLands(CommandSender sender){
+        List<String> clsNames = new ArrayList<>();
+        if(mapObjects.isEmpty()){
+            sender.sendMessage("There are no control points.");
+            return;
+        }
+        for(MapObject obj:mapObjects){
+            if(obj instanceof ControlLand){
+                clsNames.add(((ControlLand) obj).name);
+            }
+        }
+        if(clsNames.isEmpty()){
+            sender.sendMessage("There are no control points.");
+        }
+        else{
+            sender.sendMessage(clsNames.toString());
+
         }
     }
 }

@@ -23,3 +23,15 @@ commands:
   SetMap:
     description: 'Sets the game map'
     usage: /<command> <radius>
+  CreateControlLand:
+    description: 'Creates a new control land.'
+    usage: /<command> <name>
+  StartGame:
+    description: 'Starts the game.'
+    usage: /<command>
+  GetControlLands:
+    description: 'Lists control lands.'
+    usage: /<command>
+  AddControlPoint:
+    description: 'Adds a control point to a control land.'
+    usage: /<command> <control land> <name>
