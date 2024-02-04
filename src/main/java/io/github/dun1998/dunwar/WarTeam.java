@@ -1,6 +1,7 @@
 package io.github.dun1998.dunwar;
 
 
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -23,16 +24,16 @@ public class WarTeam {
     int id;
     NamedTextColor textColor;
     List<WarPlayer> players = new ArrayList<>();
-    Map<String, NamedTextColor> colorConversion = new HashMap<String, NamedTextColor>()
-    {{
-        put("red", NamedTextColor.RED);
-        put("blue", NamedTextColor.BLUE);
-        put("purple", NamedTextColor.LIGHT_PURPLE);
-        put("green", NamedTextColor.GREEN);
-        put("yellow", NamedTextColor.YELLOW);
-        put("orange", NamedTextColor.GOLD);
-    }};
+    BossBar.Color barColor;
+    Map<String, NamedTextColor> colorConversion = new HashMap<String, NamedTextColor>();
+
     public WarTeam(String color,int id){
+        colorConversion.put("red", NamedTextColor.RED);
+        colorConversion.put("blue", NamedTextColor.BLUE);
+        colorConversion.put("purple", NamedTextColor.LIGHT_PURPLE);
+        colorConversion.put("green", NamedTextColor.GREEN);
+        colorConversion. put("yellow", NamedTextColor.YELLOW);
+        colorConversion.put("orange", NamedTextColor.GOLD);
         this.color = color.toLowerCase();
         this.name = color;
         this.id =id;
