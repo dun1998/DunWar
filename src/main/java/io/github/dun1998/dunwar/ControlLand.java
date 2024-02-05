@@ -233,7 +233,7 @@ public class ControlLand extends MapObject {
             subTitle = Component.text("Neutral lands", NamedTextColor.WHITE);
         }
         Title t;
-        Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(500), Duration.ofMillis(1000));
+        Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1500), Duration.ofMillis(1000));
         t = Title.title(entryTitle,subTitle,times);
         target.showTitle(t);
     }

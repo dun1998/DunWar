@@ -20,13 +20,15 @@ public class WarTeam {
     String name;
     String color;
     int score;
-    Location spawnPoint;
     int id;
     NamedTextColor textColor;
     List<WarPlayer> players = new ArrayList<>();
     BossBar.Color barColor;
     Map<String, NamedTextColor> textColorConversion = new HashMap<String, NamedTextColor>();
     Map<String, BossBar.Color> barColorConversion = new HashMap<String, BossBar.Color>();
+
+    TeamBase base;
+    TeamSpawn teamSpawn;
 
     public WarTeam(String color,int id){
         textColorConversion.put("red", NamedTextColor.RED);
@@ -53,11 +55,12 @@ public class WarTeam {
 
     public void AddPlayer(WarPlayer player){
         players.add((player));
+        if(teamSpawn!=null){
+            player.player.setRespawnLocation(teamSpawn.spawnPoint);
+        }
     }
     public void RemovePlayer(WarPlayer player){
-        if(players.contains(player)){
-            players.remove(player);
-        }
+        players.remove(player);
     }
 
     public void GetTeamInfo(CommandSender sender){
