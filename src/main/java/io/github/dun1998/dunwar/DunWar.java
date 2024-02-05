@@ -44,6 +44,9 @@ public final class DunWar extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if(game.isRunning){
+            game.GameStop();
+        }
         // Plugin shutdown logic
         /*
         if(game.map !=null) {

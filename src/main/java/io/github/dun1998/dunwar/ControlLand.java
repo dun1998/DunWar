@@ -10,7 +10,6 @@ import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -176,10 +175,6 @@ public class ControlLand extends MapObject {
         else if(!this.controlTeamPresent){
             this.hp = Math.max(this.minHp,(this.hp-game.captureRate*this.maxPlayerCount));
         }
-        if(this.hp == 0){
-            System.out.println("Changing control");
-            this.ChangeControl(null);
-        }
         if(prevHp>this.hp){
             msg = Component.text(this.controlTeam.name).color(this.controlTeam.textColor)
                     .append(Component.text(String.format(" has lost %f hp on %s, new hp is %f ", prevHp - this.hp,this.name,this.hp)));
@@ -190,6 +185,9 @@ public class ControlLand extends MapObject {
                     .append(Component.text(String.format(" has gained %f hp on %s, new hp is %f ", this.hp-prevHp,this.name,this.hp)));
             plugin.getServer().broadcast(msg);
 
+        }
+        if(this.hp == 0){
+            this.ChangeControl(null);
         }
     }
     public void UpdateControlBarVisibility(List<WarPlayer> prevPlayers){
@@ -235,7 +233,7 @@ public class ControlLand extends MapObject {
             subTitle = Component.text("Neutral lands", NamedTextColor.WHITE);
         }
         Title t;
-        Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(0), Duration.ofMillis(1000));
+        Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(500), Duration.ofMillis(1000));
         t = Title.title(entryTitle,subTitle,times);
         target.showTitle(t);
     }
@@ -260,5 +258,26 @@ public class ControlLand extends MapObject {
                 }
             }
         }
+    }
+
+    public void RestoreDefault(){
+        BlockVector3 minP = this.region.getMinimumPoint();
+        BlockVector3 maxP = this.region.getMaximumPoint();
+        WarTeam team = null;
+        if(this.controlTeam!=null){
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(game.world))) {
+                CuboidRegion cuboidRegion = new CuboidRegion(minP,maxP);
+                BlockType blockTo = Objects.requireNonNull(game.woolColor.get("white"));
+                BlockType blockFrom  = Objects.requireNonNull(game.woolColor.get(controlTeam.color.toLowerCase()));
+                Set<BaseBlock> replBlock = new HashSet<>();
+                replBlock.add(blockFrom.getDefaultState().toBaseBlock());
+                editSession.replaceBlocks(cuboidRegion,replBlock,blockTo.getDefaultState());
+            } catch (MaxChangedBlocksException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        this.playersInLand = new ArrayList<>();
+        this.controlTeam = null;
+        this.hp = 0;
     }
 }

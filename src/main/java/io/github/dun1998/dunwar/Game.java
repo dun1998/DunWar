@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
+import javax.naming.ldap.Control;
 import java.util.*;
 
 public class Game {
@@ -74,8 +75,14 @@ public class Game {
 
     public void GameStop(){
         this.isRunning = false;
+
         for(BukkitTask task:this.activeTasks){
             task.cancel();
+        }
+        for(MapObject obj:map.mapObjects){
+            if(obj instanceof ControlLand){
+                ((ControlLand) obj).RestoreDefault();
+            }
         }
         this.activeTasks.clear();
     }
