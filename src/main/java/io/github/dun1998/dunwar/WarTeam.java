@@ -25,20 +25,29 @@ public class WarTeam {
     NamedTextColor textColor;
     List<WarPlayer> players = new ArrayList<>();
     BossBar.Color barColor;
-    Map<String, NamedTextColor> colorConversion = new HashMap<String, NamedTextColor>();
+    Map<String, NamedTextColor> textColorConversion = new HashMap<String, NamedTextColor>();
+    Map<String, BossBar.Color> barColorConversion = new HashMap<String, BossBar.Color>();
 
     public WarTeam(String color,int id){
-        colorConversion.put("red", NamedTextColor.RED);
-        colorConversion.put("blue", NamedTextColor.BLUE);
-        colorConversion.put("purple", NamedTextColor.LIGHT_PURPLE);
-        colorConversion.put("green", NamedTextColor.GREEN);
-        colorConversion. put("yellow", NamedTextColor.YELLOW);
-        colorConversion.put("orange", NamedTextColor.GOLD);
+        textColorConversion.put("red", NamedTextColor.RED);
+        textColorConversion.put("blue", NamedTextColor.BLUE);
+        textColorConversion.put("purple", NamedTextColor.LIGHT_PURPLE);
+        textColorConversion.put("green", NamedTextColor.GREEN);
+        textColorConversion.put("yellow", NamedTextColor.YELLOW);
+        barColorConversion.put("red", BossBar.Color.RED);
+        barColorConversion.put("blue", BossBar.Color.BLUE);
+        barColorConversion.put("purple", BossBar.Color.PURPLE);
+        barColorConversion.put("green", BossBar.Color.GREEN);
+        barColorConversion.put("yellow", BossBar.Color.YELLOW);
+        barColorConversion.put("white", BossBar.Color.WHITE);
         this.color = color.toLowerCase();
         this.name = color;
         this.id =id;
-        if(colorConversion.containsKey(this.color)){
-            this.textColor = colorConversion.get(this.color);
+        if(textColorConversion.containsKey(this.color)){
+            this.textColor = textColorConversion.get(this.color);
+        }
+        if(barColorConversion.containsKey(this.color)){
+            this.barColor = barColorConversion.get(this.color);
         }
     }
 

@@ -4,20 +4,26 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.function.pattern.Pattern;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockState;
-import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.time.Duration;
 import java.util.*;
 
 public class ControlLand extends MapObject {
+    List<WarPlayer> playersInLand= new ArrayList<>();
     ControlPoint cp;
     DunWar plugin;
     Game game;
@@ -27,7 +33,8 @@ public class ControlLand extends MapObject {
     is a region which when controlled changes the
     */
     String name;
-    HashMap<WarTeam,Integer> playersInArea;
+    HashMap<WarTeam,Integer> playersPerTeamInArea = new HashMap<>();
+    List<WarPlayer> playersInArea = new ArrayList<>();
     WarTeam currentControlTeam;
     int maxPlayerCount;
     int modRate;
@@ -38,6 +45,8 @@ public class ControlLand extends MapObject {
     boolean canOverlap = true;
     boolean contested;
     boolean controlTeamPresent;
+    Component barName = Component.text("Neutral control");
+    BossBar controlBar = BossBar.bossBar(barName, 0,BossBar.Color.WHITE, BossBar.Overlay.NOTCHED_20);
 
     public ControlLand(Game game,DunWar plugin,String name,ProtectedRegion region){
         this.game = game;
@@ -88,10 +97,19 @@ public class ControlLand extends MapObject {
     }
     public void Update(){
         TextComponent msg;
+        List<WarPlayer>prevPlayerList;
         msg = Component.text(String.format("Checking status of %s",this.name));
+        this.GetEntryPlayers();
+        if(!this.playersInArea.isEmpty()){
+            prevPlayerList = new ArrayList<>(this.playersInArea);
+        }
+        else{
+            prevPlayerList = new ArrayList<>();
+        }
         plugin.getServer().broadcast(msg);
         this.CheckPlayers();
-        if(this.playersInArea.isEmpty()){
+        this.UpdateControlBarVisibility(prevPlayerList);
+        if(this.playersPerTeamInArea.isEmpty()){
             msg = Component.text(String.format("No players in control point of %s",this.name));
             plugin.getServer().broadcast(msg);
             return;
@@ -100,9 +118,11 @@ public class ControlLand extends MapObject {
         plugin.getServer().broadcast(msg);
         this.CheckControlChange();
         this.ChangeHealth();
+        this.UpdateControlBar();
     }
     public void CheckPlayers(){
-        this.playersInArea = new HashMap<WarTeam,Integer>();
+        this.playersPerTeamInArea = new HashMap<WarTeam,Integer>();
+        this.playersInArea = new ArrayList<>();
         if(this.controlPoint!= null){
             if(this.controlPoint.region!=null){
                 for(WarPlayer p:this.game.playerWarDict.values()){
@@ -111,11 +131,12 @@ public class ControlLand extends MapObject {
                         Location l  = p.player.getLocation();
                         BukkitAdapter.adapt(l);
                         if(this.controlPoint.region.contains(l.getBlockX(), l.getBlockY(), l.getBlockZ())){
-                            if(playersInArea.containsKey(p.team)){
-                                playersInArea.put(p.team,playersInArea.get(p.team)+1);
+                            this.playersInArea.add(p);
+                            if(playersPerTeamInArea.containsKey(p.team)){
+                                playersPerTeamInArea.put(p.team, playersPerTeamInArea.get(p.team)+1);
                             }
                             else{
-                                playersInArea.put(p.team,1);
+                                playersPerTeamInArea.put(p.team,1);
                             }
                         }
                     }
@@ -131,12 +152,12 @@ public class ControlLand extends MapObject {
     }
 
     public void CheckControlChange(){
-        this.controlTeamPresent  = playersInArea.containsKey(controlTeam);
-        this.contested = playersInArea.keySet().size()>1;
+        this.controlTeamPresent  = playersPerTeamInArea.containsKey(controlTeam);
+        this.contested = playersPerTeamInArea.keySet().size()>1;
         this.maxPlayerCount=0;
-        for(WarTeam t:playersInArea.keySet()){
-            if(playersInArea.get(t)>maxPlayerCount) {
-                maxPlayerCount = playersInArea.get(t);
+        for(WarTeam t: playersPerTeamInArea.keySet()){
+            if(playersPerTeamInArea.get(t)>maxPlayerCount) {
+                maxPlayerCount = playersPerTeamInArea.get(t);
                 this.currentControlTeam = t;
             }
         }
@@ -169,6 +190,75 @@ public class ControlLand extends MapObject {
                     .append(Component.text(String.format(" has gained %f hp on %s, new hp is %f ", this.hp-prevHp,this.name,this.hp)));
             plugin.getServer().broadcast(msg);
 
+        }
+    }
+    public void UpdateControlBarVisibility(List<WarPlayer> prevPlayers){
+        if(!this.playersInArea.isEmpty()){
+            for(WarPlayer curPlayer:this.playersInArea){
+                if(!prevPlayers.contains(curPlayer)){
+                    //show bar
+                    curPlayer.player.showBossBar(this.controlBar);
+                }
+                else{
+                    prevPlayers.remove(curPlayer);
+                }
+            }
+        }
+        if(!prevPlayers.isEmpty()){
+            for(WarPlayer prevPlayer:prevPlayers){
+                prevPlayer.player.hideBossBar(this.controlBar);
+            }
+        }
+    }
+    public void UpdateControlBar(){
+        this.controlBar.progress(this.hp/this.maxHp);
+        if(this.controlTeam!=null){
+            this.controlBar.color(this.controlTeam.barColor);
+            this.controlBar.name(Component.text(this.controlTeam.name.toUpperCase() + " CONTROL"));
+        }
+        else{
+            this.controlBar.color(BossBar.Color.WHITE);
+            this.controlBar.name(Component.text("NEUTRAL CONTROL"));
+        }
+
+    }
+
+    public void ShowTitle(Player target){
+        Component entryTitle;
+        Component subTitle;
+        if(this.controlTeam!=null) {
+            entryTitle = Component.text(this.name.toUpperCase(), this.controlTeam.textColor);
+            subTitle = Component.text(String.format("Controlled by: %s",this.controlTeam.name), this.controlTeam.textColor);
+        }
+        else{
+            entryTitle = Component.text(this.name.toUpperCase(), NamedTextColor.WHITE);
+            subTitle = Component.text("Neutral lands", NamedTextColor.WHITE);
+        }
+        Title t;
+        Title.Times times = Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(0), Duration.ofMillis(1000));
+        t = Title.title(entryTitle,subTitle,times);
+        target.showTitle(t);
+    }
+
+    public void GetEntryPlayers(){
+        List<WarPlayer> prevPlayers = new ArrayList<>(this.playersInLand);
+        this.playersInLand = new ArrayList<>();
+        for(WarPlayer p:this.game.playerWarDict.values()) {
+            System.out.println(p.player.getName());
+            if (p.team != null) {
+                Location l = p.player.getLocation();
+                BukkitAdapter.adapt(l);
+                if (this.region.contains(l.getBlockX(), l.getBlockY(), l.getBlockZ())) {
+                    this.playersInLand.add(p);
+                }
+            }
+        }
+        if(!this.playersInLand.isEmpty()){
+            for(WarPlayer curPlayer:this.playersInLand){
+                if(!prevPlayers.contains(curPlayer)){
+                    this.ShowTitle(curPlayer.player);
+                }
+            }
         }
     }
 }
