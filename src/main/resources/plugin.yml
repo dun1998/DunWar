@@ -35,3 +35,6 @@ commands:
   AddControlPoint:
     description: 'Adds a control point to a control land.'
     usage: /<command> <control land> <name>
+  StopGame:
+    description: 'Stops a running game.'
+    usage: /<command>

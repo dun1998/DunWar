@@ -32,6 +32,7 @@ public final class DunWar extends JavaPlugin {
         this.getCommand("GetControlLands").setExecutor(new GetControlLand(this,game));
         this.getCommand("AddControlPoint").setExecutor(new AddControlPoint(this,game));
         this.getCommand("StartGame").setExecutor(new StartGame(this,game));
+        this.getCommand("StopGame").setExecutor(new StopGame(this,game));
         // Plugin startup logic
         //Load/Setup database
         //Check if a game is running
