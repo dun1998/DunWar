@@ -14,14 +14,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
 public class Game {
     //All the game logic goes here
-    List<String> allowedColors = Arrays.asList("blue","green","orange","purple","red","yellow");
+    List<String> allowedColors = Arrays.asList("blue","green","purple","red","yellow");
     Map<String, BlockType> woolColor = new HashMap<>();
     List<WarTeam> warTeams = new ArrayList<>();
     Map<Player,WarPlayer> playerWarDict = new HashMap<>();
@@ -29,6 +28,7 @@ public class Game {
     List<MapObject> gameObjects = new ArrayList<>();
     List<MapObject> requiredGameObjects = new ArrayList<>();
     RegionContainer container;
+    List<BukkitTask> activeTasks = new ArrayList<>();
     World world;
     float captureRate = 10;
     int minTeamSize =2;
@@ -61,20 +61,23 @@ public class Game {
     }
     public void GameStart(){
         this.isRunning = true;
-
+        BukkitTask t;
         if(!map.mapObjects.isEmpty()){
             for(MapObject obj :map.mapObjects){
                 if(obj instanceof ControlLand){
-                    Bukkit.getScheduler().runTaskTimer(this.plugin, new Runnable() {
-                        @Override
-                        public void run() {
-                            ((ControlLand) obj).Update();
-                        }
-                    },0L,20L);
-
+                    t = Bukkit.getScheduler().runTaskTimer(this.plugin, () -> ((ControlLand) obj).Update(),0L,20L);
+                    this.activeTasks.add(t);
                 }
             }
         }
+    }
+
+    public void GameStop(){
+        this.isRunning = false;
+        for(BukkitTask task:this.activeTasks){
+            task.cancel();
+        }
+        this.activeTasks.clear();
     }
     public boolean ReadyCheck(){
         boolean ready = true;
