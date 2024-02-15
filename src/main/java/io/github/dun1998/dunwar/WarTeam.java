@@ -1,6 +1,9 @@
 package io.github.dun1998.dunwar;
 
 
+import com.sk89q.worldguard.LocalPlayer;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.domains.DefaultDomain;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Location;
@@ -28,6 +31,7 @@ public class WarTeam {
     Map<String, BossBar.Color> barColorConversion = new HashMap<String, BossBar.Color>();
 
     TeamBase base;
+    private com.sk89q.worldguard.bukkit.WorldGuardPlugin WorldGuardPlugin;
 
     public WarTeam(String color,int id){
         textColorConversion.put("red", NamedTextColor.RED);
@@ -54,8 +58,15 @@ public class WarTeam {
 
     public void AddPlayer(WarPlayer player){
         players.add((player));
-        if(this.base!=null && base.teamSpawn!=null){
+        if(this.base!=null){
+            if(base.teamSpawn!=null){
             player.player.setRespawnLocation(base.teamSpawn,true);
+            }
+            if(this.base.region!=null){
+                DefaultDomain members = this.base.region.getMembers();
+                LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(player.player);
+                members.addPlayer(lp);
+            }
         }
     }
 
@@ -63,6 +74,13 @@ public class WarTeam {
         for(WarPlayer player: this.players){
             Player p = player.player;
             if(this.base!=null){
+                if(this.base.region!=null){
+                    LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(p);
+                    if(!this.base.region.isMember(lp)){
+                        DefaultDomain members = this.base.region.getMembers();
+                        members.addPlayer(lp);
+                    }
+                }
                 if(this.base.teamSpawn!=null){
                     p.setRespawnLocation(base.teamSpawn,true);
                 }
@@ -71,6 +89,12 @@ public class WarTeam {
     }
     public void RemovePlayer(WarPlayer player){
         players.remove(player);
+        if(this.base!=null&&this.base.region!=null){
+            DefaultDomain members = this.base.region.getMembers();
+            LocalPlayer lp = WorldGuardPlugin.inst().wrapPlayer(player.player);
+            members.removePlayer(lp);
+        }
+
     }
 
     public void GetTeamInfo(CommandSender sender){

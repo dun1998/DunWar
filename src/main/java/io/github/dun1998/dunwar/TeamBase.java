@@ -5,6 +5,9 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.Flags;
+import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
@@ -58,8 +61,10 @@ public class TeamBase extends MapObject {
                 }
             }
         }
+        reg.setFlag(Flags.ENTRY, StateFlag.State.DENY);
         this.game.regions.addRegion(reg);
         this.region = reg;
+        this.ownerTeam.UpdatePlayers();
     }
 
     public void SetTeamSpawn(CommandSender sender){
