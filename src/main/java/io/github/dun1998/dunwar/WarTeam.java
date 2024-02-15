@@ -54,8 +54,8 @@ public class WarTeam {
 
     public void AddPlayer(WarPlayer player){
         players.add((player));
-        if(base.teamSpawn!=null){
-            player.player.setRespawnLocation(base.teamSpawn);
+        if(this.base!=null && base.teamSpawn!=null){
+            player.player.setRespawnLocation(base.teamSpawn,true);
         }
     }
 
@@ -64,7 +64,7 @@ public class WarTeam {
             Player p = player.player;
             if(this.base!=null){
                 if(this.base.teamSpawn!=null){
-                    p.setRespawnLocation(base.teamSpawn);
+                    p.setRespawnLocation(base.teamSpawn,true);
                 }
             }
         }
