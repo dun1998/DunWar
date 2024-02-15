@@ -38,3 +38,9 @@ commands:
   StopGame:
     description: 'Stops a running game.'
     usage: /<command>
+  SetTeamBase:
+    description: 'Sets a teams base.'
+    usage: /<command> <team name>
+  SetTeamSpawn:
+    description: 'Sets a teams spawn at the players current location.'
+    usage: /<command> <team name>

@@ -7,6 +7,7 @@ import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,26 +17,20 @@ import java.util.Set;
 public class TeamBase extends MapObject {
     WarTeam ownerTeam;
     ProtectedRegion region;
-    TeamSpawn teamSpawn;
+    Location teamSpawn;
     WarpZone warpZone;
-    Game game;
     DunWar plugin;
-
     String name;
 
-    public TeamBase(DunWar plugin,Game game,WarTeam team){
+    public TeamBase(DunWar plugin,Game game,WarTeam team,CommandSender sender){
+        this.ownerTeam = team;
+        this.name = this.ownerTeam.name + " Area";
         this.game = game;
         this.plugin = plugin;
-        this.ownerTeam = team;
-        this.name = this.ownerTeam.name + " Spawn";
     }
-
     public void setRegion(BlockVector3 minP, BlockVector3 maxP, CommandSender sender) {
         Region select;
-        if(this.teamSpawn!=null){
-            this.teamSpawn.Destroy();
-            this.teamSpawn = null;
-        }
+        this.teamSpawn = null;
         if(this.region!=null){
             this.game.regions.removeRegion(this.region.getId());
         }
@@ -67,27 +62,30 @@ public class TeamBase extends MapObject {
         this.region = reg;
     }
 
-    public void SetTeamSpawn(BlockVector3 minP,BlockVector3 maxP,CommandSender sender){
+    public void SetTeamSpawn(CommandSender sender){
         if(this.region!=null){
-            if(minP==null || maxP ==null){
-                if(sender instanceof Player){
-                    Region select= game.getSelection(sender);
-                    if(select==null){
-                        return;
-                    }
-                    else{
-                        minP = select.getMinimumPoint();
-                        maxP = select.getMaximumPoint();
-                    }
+            if(sender instanceof Player){
+                Location loc = ((Player) sender).getLocation();
+                BlockVector3 blockVector3 = BlockVector3.at(loc.getX(),loc.getY(),loc.getZ());
+                if(!this.region.contains(blockVector3)){
+                    sender.sendMessage("Spawn point not within team base region.");
                 }
-
+                else{
+                    this.teamSpawn= loc;
+                    ownerTeam.UpdatePlayers();
+                    sender.sendMessage(String.format("Team spawn set at: %f %f %f",loc.getX(),loc.getY(),loc.getZ()));
+                }
             }
-            ProtectedRegion reg=  new ProtectedCuboidRegion("test",BlockVector3.at(minP.getX(),0,minP.getZ()),BlockVector3.at(maxP.getX(),320,maxP.getZ()));
-            reg.getIntersectingRegions();
-            if(this.teamSpawn!=null){
-                this.teamSpawn.Destroy();
+        }
+        else{
+            sender.sendMessage("Please set a region for the team's spawn.");
+        }
+    }
 
-            }
+    public void Destroy(){
+        this.teamSpawn = null;
+        if(this.region!=null){
+            game.regions.removeRegion(this.region.getId());
         }
     }
 }

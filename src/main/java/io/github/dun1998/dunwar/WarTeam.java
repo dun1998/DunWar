@@ -28,7 +28,6 @@ public class WarTeam {
     Map<String, BossBar.Color> barColorConversion = new HashMap<String, BossBar.Color>();
 
     TeamBase base;
-    TeamSpawn teamSpawn;
 
     public WarTeam(String color,int id){
         textColorConversion.put("red", NamedTextColor.RED);
@@ -55,8 +54,19 @@ public class WarTeam {
 
     public void AddPlayer(WarPlayer player){
         players.add((player));
-        if(teamSpawn!=null){
-            player.player.setRespawnLocation(teamSpawn.spawnPoint);
+        if(base.teamSpawn!=null){
+            player.player.setRespawnLocation(base.teamSpawn);
+        }
+    }
+
+    public void UpdatePlayers(){
+        for(WarPlayer player: this.players){
+            Player p = player.player;
+            if(this.base!=null){
+                if(this.base.teamSpawn!=null){
+                    p.setRespawnLocation(base.teamSpawn);
+                }
+            }
         }
     }
     public void RemovePlayer(WarPlayer player){
