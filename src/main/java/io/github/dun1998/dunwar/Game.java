@@ -65,8 +65,8 @@ public class Game {
         BukkitTask t;
         if(!map.mapObjects.isEmpty()){
             for(MapObject obj :map.mapObjects){
-                if(obj instanceof ControlLand){
-                    t = Bukkit.getScheduler().runTaskTimer(this.plugin, () -> ((ControlLand) obj).Update(),0L,20L);
+                if(obj instanceof ControlLand|| obj instanceof TeamBase){
+                    t = Bukkit.getScheduler().runTaskTimer(this.plugin, obj::Update,0L,20L);
                     this.activeTasks.add(t);
                 }
             }

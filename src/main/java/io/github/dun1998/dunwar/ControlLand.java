@@ -93,7 +93,9 @@ public class ControlLand extends MapObject {
 
     public void AddControlPoint(){
 
+
     }
+    @Override
     public void Update(){
         TextComponent msg;
         List<WarPlayer>prevPlayerList;

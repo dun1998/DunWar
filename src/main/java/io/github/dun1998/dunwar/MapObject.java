@@ -16,5 +16,9 @@ public abstract class MapObject {
     boolean canOverlap = true;
     ProtectedRegion region;
 
+    public void Update(){
+        //runs during task queue.
+    };
+
 
 }

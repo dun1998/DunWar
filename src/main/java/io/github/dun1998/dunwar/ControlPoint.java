@@ -74,4 +74,5 @@ public class ControlPoint extends MapObject{
             this.parentLand = null;
         }
     }
+
 }
