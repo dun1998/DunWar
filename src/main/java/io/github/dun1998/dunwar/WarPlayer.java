@@ -11,10 +11,19 @@ public class WarPlayer {
     //Stats
     Player player;
     WarTeam team;
+    private int score=0;
     public WarPlayer(Player player){
         this.player = player;
     }
     public void AssignTeam(WarTeam team){
         this.team = team;
+    }
+
+    public void addScore(int increment){
+        this.score += increment;
+    }
+
+    public void setScore(int newScore){
+        this.score = newScore;
     }
 }

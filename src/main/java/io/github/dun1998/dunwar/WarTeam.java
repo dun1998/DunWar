@@ -104,4 +104,7 @@ public class WarTeam {
         }
     }
 
+    public List<WarPlayer> getPlayers() {
+        return players;
+    }
 }
